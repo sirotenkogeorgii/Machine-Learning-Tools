@@ -1,0 +1,15 @@
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\bin\Debug\net6.0\Machine-Learning-Tools.exe
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\bin\Debug\net6.0\Machine-Learning-Tools.deps.json
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\bin\Debug\net6.0\Machine-Learning-Tools.runtimeconfig.json
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\bin\Debug\net6.0\Machine-Learning-Tools.dll
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\bin\Debug\net6.0\Machine-Learning-Tools.pdb
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\Machine-Learning-Tools.csproj.AssemblyReference.cache
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\Machine-Learning-Tools.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\Machine-Learning-Tools.AssemblyInfoInputs.cache
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\Machine-Learning-Tools.AssemblyInfo.cs
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\Machine-Learning-Tools.csproj.CoreCompileInputs.cache
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\Machine-Learning-Tools.dll
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\refint\Machine-Learning-Tools.dll
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\Machine-Learning-Tools.pdb
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\Machine-Learning-Tools.genruntimeconfig.cache
+C:\Users\User\RiderProjects\Machine-Learning-Tools\Machine-Learning-Tools\obj\Debug\net6.0\ref\Machine-Learning-Tools.dll
