@@ -1,2 +1,11 @@
-﻿
-Console.WriteLine("Hello World!");
+﻿using Mathematics;
+public class Program
+{
+
+    
+    
+    static void Main()
+    {
+        
+    }
+}
