@@ -1,56 +1,19 @@
 using Mathematics;
 using Datasets;
-
+using Optimizers;
+using Layers;
 namespace Models
 {
 
-    // Class of one fully connected neural network layer.
-    class FullyConnectedLayer
-    {
-        // Layer weights.
-        public Matrix Weights;
-
-        // Bias for each layer neuron.
-        public Vector Bias;
-
-        // Learning rate.
-        private float _lr;
-
-        // Layers can be defined by the number of input values and the number of output values.
-        public FullyConnectedLayer(int input, int output, float lr)
-        {
-            // We generate weights from a normal distribution
-            // with given distribution parameters.
-            Weights = Generate.RandomNormal(new int[] { input, output }, 0, 0.1f);
-
-            // Initialize bias as zero vector.
-            Bias = new Vector(output);
-
-            _lr = lr;
-        }
-
-        // Backpropagation for a layer.
-        public void BackProp(Matrix inputValues, Matrix previousGradient)
-        {
-            // Gradient for weights.
-            Matrix weightsDerivatives = Matrix.EinSum(inputValues, previousGradient).ReduceMean(0);
-
-            // Gradient for bias.
-            Vector biasDerivatives = previousGradient.ReduceMean(0);
-
-            // Update.
-            Bias -= (_lr * biasDerivatives);
-            Weights -= (_lr * weightsDerivatives);
-        }
-    }
     class MnistModel
     {
         // Model hyperparameters.
         private readonly Options.ModelOptions _Arguments;
 
         // An array of model layers.
-        private FullyConnectedLayer[] _Layers;
+        private LayerSequence _Layers;
 
+        private int _LayersCount;
         public MnistModel(Options.ModelOptions arguments)
         {
             _Arguments = arguments;
@@ -61,17 +24,21 @@ namespace Models
             if (layers[^1] != "10") layers[^1] = "10";
             if (layers[0] != "784") layers[0] = "784";
 
-            _Layers = new FullyConnectedLayer[layers.Length - 1];
-
+            _LayersCount = layers.Length - 1;
+            _Layers = new LayerSequence();
+            //_Layers.FC  = new List<FullyConnectedLayer>();
+            //_Layers = new FullyConnectedLayer[layers.Length - 1];
+            //Layers. = new List<FullyConnectedLayer>(layers.Length - 1);
+            
+            
             int result;
             // Create network words and configure them to match the desired architecture.
-            for (int i = 0; i < _Layers.Length; i++)
+            for (int i = 0; i < _LayersCount; i++)
             {
                 var layerIsNum = int.TryParse(layers[i], out result);
                 var nextLayerIsNum = int.TryParse(layers[i + 1], out result);
                 if (layerIsNum && nextLayerIsNum)
-                    _Layers[i] = new FullyConnectedLayer(Int32.Parse(layers[i]), Int32.Parse(layers[i + 1]), _Arguments.LearningRate);
-
+                    _Layers.Addo(new FullyConnectedLayer(Int32.Parse(layers[i]), Int32.Parse(layers[i + 1]), _Arguments.LearningRate));
             }
         }
 
@@ -79,7 +46,7 @@ namespace Models
         public Tensor Predict(float[][,] batchImages)
         {
             // Create an output tensor.
-            var outputs = new Tensor(_Layers.Length + 1);
+            var outputs = new Tensor(_LayersCount + 1);
 
             // Wrap the batch images into tensor.
             var images = new Tensor(batchImages);
@@ -91,15 +58,15 @@ namespace Models
             outputs.Values[1] = lastLayer.Values;
 
             // Pass images through all layers.
-            for (int i = 0; i < _Layers.Length - 1; i++)
+            for (int i = 0; i < _LayersCount - 1; i++)
             {
-                lastLayer = ((lastLayer & _Layers[i].Weights) + _Layers[i].Bias).Tanh();
+                lastLayer = ((lastLayer & _Layers.GetFcLayer(i).Weights) + _Layers.GetFcLayer(i).Bias).Tanh();
                 outputs.Values[i + 2] = lastLayer.Values;
             }
 
             // We don't use the activation function for the last layer,
             // but we use softmax fucntion to get probability distribution.
-            lastLayer = ((lastLayer & _Layers[_Layers.Length - 1].Weights) + _Layers[_Layers.Length - 1].Bias);
+            lastLayer = ((lastLayer & _Layers.GetFcLayer(_LayersCount - 1).Weights) + _Layers.GetFcLayer(_LayersCount - 1).Bias);
 
             // The probability distribution is the first matrix in the output tensor.
             outputs.Values[0] = lastLayer.Softmax().Values;
@@ -139,13 +106,13 @@ namespace Models
 
                 // We compute the gradients for each layer
                 // starting from the end, that is, from the layer that is closest to the output.
-                for (int i = _Layers.Length; i > 0; i--)
+                for (int i = _LayersCount; i > 0; i--)
                 {
                     hiddenAfterTanh = new Matrix(predictions.Values[i]);
                     TanhJDeriv = 1 - (hiddenAfterTanh * hiddenAfterTanh);
-                    dCE_dbeforeTanh = (prevGrad & _Layers[i - 1].Weights.Transpose()) * TanhJDeriv;
-
-                    _Layers[i - 1].BackProp(hiddenAfterTanh, prevGrad);
+                    dCE_dbeforeTanh = (prevGrad & _Layers.GetFcLayer(i - 1).Weights.Transpose()) * TanhJDeriv;
+                    
+                    _Layers.GetFcLayer(i - 1).BackProp(hiddenAfterTanh, prevGrad);
 
                     prevGrad = dCE_dbeforeTanh;
                 }
