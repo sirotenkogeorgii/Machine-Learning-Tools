@@ -50,13 +50,10 @@ namespace Optimizers
 
         public void Update(int layerIndex, Matrix inputValues, Matrix previousGradient)
         {
-            // Gradient for weights.
-            //Matrix weightsDerivatives = Matrix.EinSum(inputValues, previousGradient).ReduceMean(0);
-
-            // Gradient for bias.
-            //Vector biasDerivatives = previousGradient.ReduceMean(0);
-
+            // Momentum for weights.
             _momentum[layerIndex].Weights = _beta * _momentum[layerIndex].Weights - _learningRate * Matrix.EinSum(inputValues, previousGradient).ReduceMean(0);
+            
+            // Momentum for bias.
             _momentum[layerIndex].Bias = _beta * _momentum[layerIndex].Bias - _learningRate * previousGradient.ReduceMean(0);
             
             // Update.
