@@ -44,7 +44,7 @@ namespace Optimizers
             _momentum = new FullyConnectedLayer[modelParameters.Length];
 
             for (int i = 0; i < modelParameters.Length; i++) 
-                _momentum[i] = new FullyConnectedLayer(modelParameters[i].Weights.Values.GetLength(0), modelParameters[i].Weights.Values.GetLength(1), learningRate, "zeros");
+                _momentum[i] = new FullyConnectedLayer(modelParameters[i].Weights.Values.GetLength(0), modelParameters[i].Weights.Values.GetLength(1), "zeros");
 
         }
 

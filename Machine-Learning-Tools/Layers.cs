@@ -12,13 +12,10 @@ namespace Layers
         // Bias for each layer neuron.
         public Vector Bias;
 
-        // Learning rate.
-        private float _lr;
-
         // Layers can be defined by the number of input values and the number of output values.
-        public FullyConnectedLayer(int input, int output, float lr, string distribution)
+        public FullyConnectedLayer(int input, int output, string distribution)
         {
-            // We generate weights from a normal distribution
+            // We generate weights from a distribution
             // with given distribution parameters.
             switch (distribution)
             {
@@ -35,23 +32,7 @@ namespace Layers
             
             // Initialize bias as zero vector.
             Bias = new Vector(output);
-
-            _lr = lr;
         }
-
-        // Backpropagation for a layer.
-        // public void BackProp(Matrix inputValues, Matrix previousGradient)
-        // {
-        //     // Gradient for weights.
-        //     Matrix weightsDerivatives = Matrix.EinSum(inputValues, previousGradient).ReduceMean(0);
-        //
-        //     // Gradient for bias.
-        //     Vector biasDerivatives = previousGradient.ReduceMean(0);
-        //
-        //     // Update.
-        //     Bias -= (_lr * biasDerivatives);
-        //     Weights -= (_lr * weightsDerivatives);
-        // }
     }
     
     public struct LayerSequence

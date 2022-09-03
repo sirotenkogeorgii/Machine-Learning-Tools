@@ -39,7 +39,7 @@ namespace Models
                 var layerIsNum = int.TryParse(layers[i], out result);
                 var nextLayerIsNum = int.TryParse(layers[i + 1], out result);
                 if (layerIsNum && nextLayerIsNum)
-                    _Layers[i] = new FullyConnectedLayer(Int32.Parse(layers[i]), Int32.Parse(layers[i + 1]), _Arguments.LearningRate, "normal");
+                    _Layers[i] = new FullyConnectedLayer(Int32.Parse(layers[i]), Int32.Parse(layers[i + 1]), "normal");
                     //_Layers.Addo(new FullyConnectedLayer(Int32.Parse(layers[i]), Int32.Parse(layers[i + 1]), _Arguments.LearningRate));
             }
             
