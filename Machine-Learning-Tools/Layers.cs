@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using Mathematics;
 namespace Layers
 {
-    
     // Class of one fully connected neural network layer.
-    class FullyConnectedLayer
+    public class FullyConnectedLayer
     {
         // Layer weights.
         public Matrix Weights;
@@ -17,12 +16,23 @@ namespace Layers
         private float _lr;
 
         // Layers can be defined by the number of input values and the number of output values.
-        public FullyConnectedLayer(int input, int output, float lr)
+        public FullyConnectedLayer(int input, int output, float lr, string distribution)
         {
             // We generate weights from a normal distribution
             // with given distribution parameters.
-            Weights = Generate.RandomNormal(new int[] { input, output }, 0, 0.1f);
-
+            switch (distribution)
+            {
+                case "normal":
+                    Weights = Generate.RandomNormal(new int[] { input, output }, 0, 0.1f);
+                    break;
+                case "zeros":
+                    Weights = new Matrix(new int[] { input, output });
+                    break;
+                default:
+                    Weights = new Matrix(new int[] { input, output });
+                    break;
+            }
+            
             // Initialize bias as zero vector.
             Bias = new Vector(output);
 
@@ -30,21 +40,21 @@ namespace Layers
         }
 
         // Backpropagation for a layer.
-        public void BackProp(Matrix inputValues, Matrix previousGradient)
-        {
-            // Gradient for weights.
-            Matrix weightsDerivatives = Matrix.EinSum(inputValues, previousGradient).ReduceMean(0);
-
-            // Gradient for bias.
-            Vector biasDerivatives = previousGradient.ReduceMean(0);
-
-            // Update.
-            Bias -= (_lr * biasDerivatives);
-            Weights -= (_lr * weightsDerivatives);
-        }
+        // public void BackProp(Matrix inputValues, Matrix previousGradient)
+        // {
+        //     // Gradient for weights.
+        //     Matrix weightsDerivatives = Matrix.EinSum(inputValues, previousGradient).ReduceMean(0);
+        //
+        //     // Gradient for bias.
+        //     Vector biasDerivatives = previousGradient.ReduceMean(0);
+        //
+        //     // Update.
+        //     Bias -= (_lr * biasDerivatives);
+        //     Weights -= (_lr * weightsDerivatives);
+        // }
     }
     
-    struct LayerSequence
+    public struct LayerSequence
     {
         public List<FullyConnectedLayer> FC;
         //public FullyConnectedLayer[] FC;

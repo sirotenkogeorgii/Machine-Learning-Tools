@@ -2,7 +2,7 @@
 {
 
     // Generates various vectors, matrices and tensors.
-    class Generate
+    public class Generate
     {
         // Generates a matrix of the given size
         // where all elements are from a normal distribution
@@ -105,7 +105,7 @@
     }
 
     // Represents a vector and related operations.
-    class Vector
+    public class Vector
     {
         // Vector values.
         public float[] Values;
@@ -382,7 +382,7 @@
     }
 
     // Represents a matrix and related operations.
-    class Matrix
+    public class Matrix
     {
         // Matrix values.
         public float[,] Values;
@@ -899,7 +899,7 @@
     }
 
     // Represents a tensor and related operations.
-    class Tensor
+    public class Tensor
     {
         // Tensor values.
         public float[][,] Values;

@@ -11,13 +11,15 @@ namespace Models
         private readonly Options.ModelOptions _Arguments;
 
         // An array of model layers.
-        private LayerSequence _Layers;
+        private FullyConnectedLayer[] _Layers;
+
+        private Momentum _Optimizer;
 
         private int _LayersCount;
         public MnistModel(Options.ModelOptions arguments)
         {
             _Arguments = arguments;
-
+            
             string[] layers = _Arguments.Architecture.Split('-');
 
             if (layers.Length <= 2) layers = new string[3] { "784", "20", "10"};
@@ -25,11 +27,10 @@ namespace Models
             if (layers[0] != "784") layers[0] = "784";
 
             _LayersCount = layers.Length - 1;
-            _Layers = new LayerSequence();
+            _Layers = new FullyConnectedLayer[layers.Length - 1];
             //_Layers.FC  = new List<FullyConnectedLayer>();
             //_Layers = new FullyConnectedLayer[layers.Length - 1];
             //Layers. = new List<FullyConnectedLayer>(layers.Length - 1);
-            
             
             int result;
             // Create network words and configure them to match the desired architecture.
@@ -38,8 +39,11 @@ namespace Models
                 var layerIsNum = int.TryParse(layers[i], out result);
                 var nextLayerIsNum = int.TryParse(layers[i + 1], out result);
                 if (layerIsNum && nextLayerIsNum)
-                    _Layers.Addo(new FullyConnectedLayer(Int32.Parse(layers[i]), Int32.Parse(layers[i + 1]), _Arguments.LearningRate));
+                    _Layers[i] = new FullyConnectedLayer(Int32.Parse(layers[i]), Int32.Parse(layers[i + 1]), _Arguments.LearningRate, "normal");
+                    //_Layers.Addo(new FullyConnectedLayer(Int32.Parse(layers[i]), Int32.Parse(layers[i + 1]), _Arguments.LearningRate));
             }
+            
+            _Optimizer = new Momentum(_Layers, 0.9f, _Arguments.LearningRate);
         }
 
         // Batch prediction.
@@ -60,13 +64,13 @@ namespace Models
             // Pass images through all layers.
             for (int i = 0; i < _LayersCount - 1; i++)
             {
-                lastLayer = ((lastLayer & _Layers.GetFcLayer(i).Weights) + _Layers.GetFcLayer(i).Bias).Tanh();
+                lastLayer = ((lastLayer & _Layers[i].Weights) + _Layers[i].Bias).Tanh();
                 outputs.Values[i + 2] = lastLayer.Values;
             }
 
             // We don't use the activation function for the last layer,
             // but we use softmax fucntion to get probability distribution.
-            lastLayer = ((lastLayer & _Layers.GetFcLayer(_LayersCount - 1).Weights) + _Layers.GetFcLayer(_LayersCount - 1).Bias);
+            lastLayer = ((lastLayer & _Layers[_LayersCount - 1].Weights) + _Layers[_LayersCount - 1].Bias);
 
             // The probability distribution is the first matrix in the output tensor.
             outputs.Values[0] = lastLayer.Softmax().Values;
@@ -110,9 +114,10 @@ namespace Models
                 {
                     hiddenAfterTanh = new Matrix(predictions.Values[i]);
                     TanhJDeriv = 1 - (hiddenAfterTanh * hiddenAfterTanh);
-                    dCE_dbeforeTanh = (prevGrad & _Layers.GetFcLayer(i - 1).Weights.Transpose()) * TanhJDeriv;
+                    dCE_dbeforeTanh = (prevGrad & _Layers[i - 1].Weights.Transpose()) * TanhJDeriv;
                     
-                    _Layers.GetFcLayer(i - 1).BackProp(hiddenAfterTanh, prevGrad);
+                    _Optimizer.Update(i - 1, hiddenAfterTanh, prevGrad);
+                    //_Layers.GetFcLayer(i - 1).BackProp(hiddenAfterTanh, prevGrad);
 
                     prevGrad = dCE_dbeforeTanh;
                 }
